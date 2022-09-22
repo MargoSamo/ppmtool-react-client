@@ -12,12 +12,19 @@ class AddProject extends Component {
       projectIdentifier: "",
       description: "",
       start_date: "",
-      end_date: ""
+      end_date: "",
+      errors:{}
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
+componentWillReceiveProps(nextProps) {
+  if(nextProps.errors) {
+    this.setState({ errors: nextProps.errors});
+  }
+}
 
 onChange(e){
   this.setState({ [e.target.name]: e.target.value });
@@ -36,8 +43,11 @@ onSubmit(e){
 }
 
   render() {
+    const {errors} = this.state 
+
     return (
       <div> 
+      
         <div className="project">
         <div className="container">
             <div className="row">
@@ -54,6 +64,7 @@ onSubmit(e){
                             value={this.state.projectName}
                             onChange={this.onChange}
                             />
+                            <p> {errors.projectName} </p>
                         </div>
                         <div className="form-group">
                             <input type="text" className="form-control form-control-lg" 
@@ -61,8 +72,8 @@ onSubmit(e){
                             name="projectIdentifier"
                             value={this.state.projectIdentifier}
                             onChange={this.onChange}
-
                                 />
+                                <p> {errors.projectIdentifier} </p>
                         </div>
                         <div className="form-group">
                             <textarea 
@@ -71,7 +82,9 @@ onSubmit(e){
                             name="description"
                             value={this.state.description}
                             onChange={this.onChange}
-                            ></textarea>
+                            >
+                            </textarea>
+                            <p> {errors.description} </p>
                         </div>
                         <h6>Start Date</h6>
                         <div className="form-group">
@@ -91,7 +104,6 @@ onSubmit(e){
                             onChange={this.onChange}
                             />
                         </div>
-
                         <input type="submit" className="btn btn-primary btn-block mt-4" />
                     </form>
                 </div>
@@ -104,10 +116,15 @@ onSubmit(e){
 }
 
 AddProject.propTypes = {
-  createProject: PropTypes.func.isRequired
-}
+  createProject: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  errors: state.errors
+});
 
 export default connect(
-  null,
+  mapStateToProps,
   {createProject}
   )(AddProject);
